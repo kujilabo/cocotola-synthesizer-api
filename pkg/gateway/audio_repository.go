@@ -13,7 +13,7 @@ import (
 
 type audioEntity struct {
 	ID           uint   `validate:"required"`
-	Lang         string `validate:"required"`
+	Lang5        string `validate:"required"`
 	Text         string `validate:"required"`
 	AudioContent string `validate:"required"`
 }
@@ -23,7 +23,7 @@ func (e *audioEntity) TableName() string {
 }
 
 func (e *audioEntity) toAudioModel() (domain.AudioModel, error) {
-	lang5, err := domain.NewLang5(e.Lang)
+	lang5, err := domain.NewLang5(e.Lang5)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +41,9 @@ func NewAudioRepository(db *gorm.DB) service.AudioRepository {
 	}
 }
 
-func (r *audioRepository) AddAudio(ctx context.Context, lang domain.Lang5, text, audioContent string) (domain.AudioID, error) {
+func (r *audioRepository) AddAudio(ctx context.Context, lang5 domain.Lang5, text, audioContent string) (domain.AudioID, error) {
 	entity := audioEntity{
-		Lang:         lang.String(),
+		Lang5:        lang5.String(),
 		Text:         text,
 		AudioContent: audioContent,
 	}
@@ -72,9 +72,9 @@ func (r *audioRepository) FindAudioByAudioID(ctx context.Context, audioID domain
 	return audio, nil
 }
 
-func (r *audioRepository) FindByLangAndText(ctx context.Context, lang domain.Lang5, text string) (service.Audio, error) {
+func (r *audioRepository) FindByLangAndText(ctx context.Context, lang5 domain.Lang5, text string) (service.Audio, error) {
 	entity := audioEntity{}
-	if result := r.db.Where("lang = ? and text = ?", lang.String(), text).First(&entity); result.Error != nil {
+	if result := r.db.Where("lang5 = ? and text = ?", lang5.String(), text).First(&entity); result.Error != nil {
 		return nil, result.Error
 	}
 	audio, err := entity.toAudioModel()
@@ -88,9 +88,9 @@ func (r *audioRepository) FindByLangAndText(ctx context.Context, lang domain.Lan
 	return audioService, nil
 }
 
-func (r *audioRepository) FindAudioIDByText(ctx context.Context, lang domain.Lang5, text string) (domain.AudioID, error) {
+func (r *audioRepository) FindAudioIDByText(ctx context.Context, lang5 domain.Lang5, text string) (domain.AudioID, error) {
 	entity := audioEntity{}
-	if result := r.db.Where("lang = ? and text = ?", lang.String(), text).First(&entity); result.Error != nil {
+	if result := r.db.Where("lang5 = ? and text = ?", lang5.String(), text).First(&entity); result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return 0, service.ErrAudioNotFound
 		}

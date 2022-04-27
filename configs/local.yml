@@ -11,7 +11,7 @@ db:
     username: user
     password: password
     host: 127.0.0.1
-    port: 3346
+    port: 3336
     database: development
 auth:
   username: user

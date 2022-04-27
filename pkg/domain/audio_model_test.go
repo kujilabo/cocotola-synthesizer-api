@@ -70,7 +70,7 @@ func TestNewAudio(t *testing.T) {
 			}
 			if !tt.wantErr {
 				assert.Equal(t, tt.wantID, got.GetID())
-				assert.Equal(t, tt.wantLang, got.GetLang())
+				assert.Equal(t, tt.wantLang, got.GetLang5())
 				assert.Equal(t, tt.wantText, got.GetText())
 				assert.Equal(t, tt.wantContent, got.GetContent())
 			}

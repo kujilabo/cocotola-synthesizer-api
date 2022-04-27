@@ -10,7 +10,7 @@ import (
 )
 
 type UserUsecase interface {
-	Synthesize(ctx context.Context, lang domain.Lang2, text string) (service.Audio, error)
+	Synthesize(ctx context.Context, lang2 domain.Lang2, text string) (service.Audio, error)
 
 	FindAudioByAudioID(ctx context.Context, audioID domain.AudioID) (service.Audio, error)
 }
@@ -29,7 +29,7 @@ func NewUserUsecase(db *gorm.DB, rfFunc service.RepositoryFactoryFunc, synthesiz
 	}
 }
 
-func (u *userUsecase) Synthesize(ctx context.Context, lang domain.Lang2, text string) (service.Audio, error) {
+func (u *userUsecase) Synthesize(ctx context.Context, lang2 domain.Lang2, text string) (service.Audio, error) {
 	// try to find the audio content from the DB
 	rf, err := u.rfFunc(ctx, u.db)
 	if err != nil {
@@ -37,7 +37,7 @@ func (u *userUsecase) Synthesize(ctx context.Context, lang domain.Lang2, text st
 	}
 
 	repo := rf.NewAudioRepository(ctx)
-	audioContentFromDB, err := repo.FindByLangAndText(ctx, lang.ToLang5(), text)
+	audioContentFromDB, err := repo.FindByLangAndText(ctx, lang2.ToLang5(), text)
 	if err != nil {
 		if !errors.Is(err, service.ErrAudioNotFound) {
 			return nil, err
@@ -47,17 +47,17 @@ func (u *userUsecase) Synthesize(ctx context.Context, lang domain.Lang2, text st
 	}
 
 	// synthesize text via the Web API
-	audioContent, err := u.synthesizerClient.Synthesize(ctx, lang.ToLang5(), text)
+	audioContent, err := u.synthesizerClient.Synthesize(ctx, lang2.ToLang5(), text)
 	if err != nil {
 		return nil, err
 	}
 
-	audioID, err := repo.AddAudio(ctx, lang.ToLang5(), text, audioContent)
+	audioID, err := repo.AddAudio(ctx, lang2.ToLang5(), text, audioContent)
 	if err != nil {
 		return nil, err
 	}
 
-	audioModel, err := domain.NewAudioModel(uint(audioID), lang.ToLang5(), text, audioContent)
+	audioModel, err := domain.NewAudioModel(uint(audioID), lang2.ToLang5(), text, audioContent)
 	if err != nil {
 		return nil, err
 	}
