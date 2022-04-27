@@ -13,3 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+.vscode
+tmp/
+*.db
+export.sh
+
+*.csv
+
+docker/development/mysql-data
