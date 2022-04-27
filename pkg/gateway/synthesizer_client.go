@@ -35,7 +35,7 @@ func NewSynthesizerClient(key string, timeout time.Duration) service.Synthesizer
 	}
 }
 
-func (s *synthesizerClient) Synthesize(ctx context.Context, lang app.Lang5, text string) (string, error) {
+func (s *synthesizerClient) Synthesize(ctx context.Context, lang5 app.Lang5, text string) (string, error) {
 	ctx, span := tracer.Start(ctx, "synthesizerClient.Synthesize")
 	defer span.End()
 
@@ -46,7 +46,7 @@ func (s *synthesizerClient) Synthesize(ctx context.Context, lang app.Lang5, text
 			"text": text,
 		},
 		"voice": m{
-			"languageCode": lang.String(),
+			"languageCode": lang5.String(),
 			"ssmlGender":   "FEMALE",
 		},
 		"audioConfig": m{

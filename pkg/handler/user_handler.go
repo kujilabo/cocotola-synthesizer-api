@@ -37,7 +37,7 @@ func (h *userHandler) Synthesize(c *gin.Context) {
 			return nil
 		}
 
-		lang2, err := domain.NewLang2(param.Lang)
+		lang2, err := domain.NewLang2(param.Lang2)
 		if err != nil {
 			return nil
 		}
