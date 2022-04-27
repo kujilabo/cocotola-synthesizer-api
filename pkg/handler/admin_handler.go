@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/kujilabo/cocotola-synthesizer-api/pkg/usecase"
-	"github.com/kujilabo/cocotola-synthesizer-api/pkg_lib/log"
 )
 
 type AdminHandler interface {
@@ -22,10 +22,10 @@ func (h *adminHandler) FindAudio(c *gin.Context) {
 
 }
 
-func (h *adminHandler) errorHandle(c *gin.Context, err error) bool {
-	ctx := c.Request.Context()
-	logger := log.FromContext(ctx)
+// func (h *adminHandler) errorHandle(c *gin.Context, err error) bool {
+// 	ctx := c.Request.Context()
+// 	logger := log.FromContext(ctx)
 
-	logger.Errorf("adminHandler. err: %v", err)
-	return false
-}
+// 	logger.Errorf("adminHandler. err: %v", err)
+// 	return false
+// }
