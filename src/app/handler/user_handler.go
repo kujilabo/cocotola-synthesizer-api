@@ -17,6 +17,7 @@ import (
 
 type UserHandler interface {
 	Synthesize(c *gin.Context)
+	FindAudioByAudioID(c *gin.Context)
 }
 
 type userHandler struct {
@@ -44,7 +45,7 @@ func (h *userHandler) Synthesize(c *gin.Context) {
 
 		result, err := h.userUsecase.Synthesize(ctx, lang2, param.Text)
 		if err != nil {
-			return xerrors.Errorf("failed to FindSentences. err: %w", err)
+			return xerrors.Errorf("failed to Synthesize. err: %w", err)
 		}
 
 		response, err := converter.ToAudioResponse(ctx, result)
@@ -59,6 +60,7 @@ func (h *userHandler) Synthesize(c *gin.Context) {
 
 func (h *userHandler) FindAudioByAudioID(c *gin.Context) {
 	ctx := c.Request.Context()
+	logger := log.FromContext(ctx)
 
 	handlerhelper.HandleFunction(c, func() error {
 		audioID, err := ginhelper.GetUintFromPath(c, "audioID")
@@ -77,6 +79,7 @@ func (h *userHandler) FindAudioByAudioID(c *gin.Context) {
 			return xerrors.Errorf("failed to ToAudioResponse. err: %w", err)
 		}
 
+		logger.Debugf("response: %+v", response)
 		c.JSON(http.StatusOK, response)
 		return nil
 	}, h.errorHandle)

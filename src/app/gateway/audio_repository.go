@@ -42,6 +42,9 @@ func NewAudioRepository(db *gorm.DB) service.AudioRepository {
 }
 
 func (r *audioRepository) AddAudio(ctx context.Context, lang5 domain.Lang5, text, audioContent string) (domain.AudioID, error) {
+	_, span := tracer.Start(ctx, "audioRepository.AddAudio")
+	defer span.End()
+
 	entity := audioEntity{
 		Lang5:        lang5.String(),
 		Text:         text,
@@ -54,6 +57,9 @@ func (r *audioRepository) AddAudio(ctx context.Context, lang5 domain.Lang5, text
 }
 
 func (r *audioRepository) FindAudioByAudioID(ctx context.Context, audioID domain.AudioID) (service.Audio, error) {
+	_, span := tracer.Start(ctx, "audioRepository.FindAudioByAudioID")
+	defer span.End()
+
 	entity := audioEntity{}
 	if result := r.db.Where("id = ?", uint(audioID)).First(&entity); result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -73,8 +79,14 @@ func (r *audioRepository) FindAudioByAudioID(ctx context.Context, audioID domain
 }
 
 func (r *audioRepository) FindByLangAndText(ctx context.Context, lang5 domain.Lang5, text string) (service.Audio, error) {
+	_, span := tracer.Start(ctx, "audioRepository.FindByLangAndText")
+	defer span.End()
+
 	entity := audioEntity{}
 	if result := r.db.Where("lang5 = ? and text = ?", lang5.String(), text).First(&entity); result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, service.ErrAudioNotFound
+		}
 		return nil, result.Error
 	}
 	audio, err := entity.toAudioModel()
@@ -89,6 +101,9 @@ func (r *audioRepository) FindByLangAndText(ctx context.Context, lang5 domain.La
 }
 
 func (r *audioRepository) FindAudioIDByText(ctx context.Context, lang5 domain.Lang5, text string) (domain.AudioID, error) {
+	_, span := tracer.Start(ctx, "audioRepository.FindAudioIDByText")
+	defer span.End()
+
 	entity := audioEntity{}
 	if result := r.db.Where("lang5 = ? and text = ?", lang5.String(), text).First(&entity); result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {

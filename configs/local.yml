@@ -1,7 +1,7 @@
 ---
 app:
   name: cocotola-synthesizer-api
-  port: 8480
+  port: 8380
 db:
   # driverName: sqlite3
   # sqlite3:
@@ -32,7 +32,7 @@ shutdown:
 log:
   level: info
 swagger:
-  host: localhost:8480
+  host: localhost:8380
   schema: http
 debug:
   ginMode: true
