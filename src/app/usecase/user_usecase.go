@@ -6,6 +6,7 @@ import (
 
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/domain"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/service"
+	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 )
 
@@ -40,7 +41,7 @@ func (u *userUsecase) Synthesize(ctx context.Context, lang2 domain.Lang2, text s
 	audioContentFromDB, err := repo.FindByLangAndText(ctx, lang2.ToLang5(), text)
 	if err != nil {
 		if !errors.Is(err, service.ErrAudioNotFound) {
-			return nil, err
+			return nil, xerrors.Errorf("faield FindByLangAndText. err: %w", err)
 		}
 	} else {
 		return audioContentFromDB, nil
@@ -49,17 +50,17 @@ func (u *userUsecase) Synthesize(ctx context.Context, lang2 domain.Lang2, text s
 	// synthesize text via the Web API
 	audioContent, err := u.synthesizerClient.Synthesize(ctx, lang2.ToLang5(), text)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("faield to u.synthesizerClient.Synthesize. err: %w", err)
 	}
 
 	audioID, err := repo.AddAudio(ctx, lang2.ToLang5(), text, audioContent)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("faield toAddAudio. err: %w", err)
 	}
 
 	audioModel, err := domain.NewAudioModel(uint(audioID), lang2.ToLang5(), text, audioContent)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("faield NewAudioModel. err: %w", err)
 	}
 
 	return service.NewAudio(audioModel)

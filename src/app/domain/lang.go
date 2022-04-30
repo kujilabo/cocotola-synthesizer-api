@@ -104,9 +104,9 @@ func (l *lang5) String() string {
 
 func (l *lang5) ToLang2() Lang2 {
 	switch l.value {
-	case "eng":
+	case "en-US":
 		return Lang2EN
-	case "jpn":
+	case "ja-JP":
 		return Lang2JA
 	default:
 		return Lang2Unknown

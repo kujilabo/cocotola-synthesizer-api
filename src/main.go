@@ -104,6 +104,7 @@ func main() {
 			user := v1.Group("user")
 			userHandler := handler.NewUserHandler(userUsecase)
 			user.POST("synthesize", userHandler.Synthesize)
+			user.GET("audio/:audioID", userHandler.FindAudioByAudioID)
 		}
 	}
 
