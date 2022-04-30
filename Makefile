@@ -1,10 +1,13 @@
-.PHONY: gen-src unit-test swagger docker-up docker-down test-docker-up test-docker-down docker-clear
+.PHONY: gen-src unit-test lint swagger docker-up docker-down test-docker-up test-docker-down docker-clear
 
 gen-src:
 	@go generate ./src/...
 
 unit-test:
 	@go test -v -short ./src/...
+
+lint:
+	@cd src && golangci-lint run --config ../.github/.golangci.yml && cd ..
 
 swagger:
 	@swag init -d src
