@@ -17,7 +17,7 @@ auth:
   username: $AUTH_USERNAME
   password: $AUTH_PASSWORD
 synthesizer:
-  key: $SUBSCRIPTION_KEY
+  key: $SYNTHESIZER_KEY
   timeoutSec: 10
 trace:
   exporter: gcp
@@ -28,7 +28,7 @@ shutdown:
   timeSec1: 10
   timeSec2: 10
 log:
-  level: debug
+  level: $LOG_LEVEL
 swagger:
   host: cocotola.com
   schema: https
