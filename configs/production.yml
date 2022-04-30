@@ -17,7 +17,7 @@ auth:
   username: $AUTH_USERNAME
   password: $AUTH_PASSWORD
 synthesizer:
-  key: $SYNTHESIZER_KEY
+  key: $SUBSCRIPTION_KEY
   timeoutSec: 10
 trace:
   exporter: gcp
