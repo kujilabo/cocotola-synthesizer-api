@@ -16,6 +16,20 @@ jobs:
   #         reporter: github-pr-review
   #         filter_mode: nofilter
   #         fail_on_error: true
+  staticcheck:
+    name: runner / staticcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: errcheck
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          github_token: ${{ secrets.REVIEWDOG_TOKEN }}
+          reporter: github-pr-review
+          golangci_lint_flags: "--disable-all -E staticcheck --timeout=10m"
+          tool_name: staticcheck
+          filter_mode: nofilter
+          fail_on_error: true
 
   golangci-lint:
     name: runner / golangci-lint
