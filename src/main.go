@@ -180,11 +180,13 @@ func initialize(ctx context.Context, env string) (*config.Config, *gorm.DB, *sql
 
 	router := gin.New()
 	router.Use(cors.New(corsConfig))
-	router.Use(middleware.NewLogMiddleware())
 	router.Use(gin.Recovery())
 
 	if cfg.Debug.GinMode {
+		logrus.Info("GinMode Debug is enabled")
 		router.Use(ginlog.Middleware(ginlog.DefaultConfig))
+	} else {
+		logrus.Info("GinMode Debug is disabled")
 	}
 
 	if cfg.Debug.Wait {
