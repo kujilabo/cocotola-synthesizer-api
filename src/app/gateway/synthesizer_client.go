@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"golang.org/x/xerrors"
 
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/domain"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-synthesizer-api/src/lib/errors"
 )
 
 type synthesizerClient struct {
@@ -87,7 +87,7 @@ func (s *synthesizerClient) Synthesize(ctx context.Context, lang5 domain.Lang5, 
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", xerrors.Errorf("%s", string(body))
+		return "", liberrors.Errorf("%s", string(body))
 	}
 
 	response := synthesizeResponse{}
