@@ -1,17 +1,17 @@
-package handler
+package controller
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/xerrors"
 
+	"github.com/kujilabo/cocotola-synthesizer-api/src/app/controller/converter"
+	"github.com/kujilabo/cocotola-synthesizer-api/src/app/controller/entity"
+	handlerhelper "github.com/kujilabo/cocotola-synthesizer-api/src/app/controller/helper"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/domain"
-	"github.com/kujilabo/cocotola-synthesizer-api/src/app/handler/converter"
-	"github.com/kujilabo/cocotola-synthesizer-api/src/app/handler/entity"
-	handlerhelper "github.com/kujilabo/cocotola-synthesizer-api/src/app/handler/helper"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/usecase"
-	"github.com/kujilabo/cocotola-synthesizer-api/src/lib/ginhelper"
+	"github.com/kujilabo/cocotola-synthesizer-api/src/lib/controller/helper"
+	liberrors "github.com/kujilabo/cocotola-synthesizer-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/lib/log"
 )
 
@@ -45,12 +45,12 @@ func (h *userHandler) Synthesize(c *gin.Context) {
 
 		result, err := h.userUsecase.Synthesize(ctx, lang2, param.Text)
 		if err != nil {
-			return xerrors.Errorf("failed to Synthesize. err: %w", err)
+			return liberrors.Errorf("failed to Synthesize. err: %w", err)
 		}
 
 		response, err := converter.ToAudioResponse(ctx, result)
 		if err != nil {
-			return xerrors.Errorf("failed to ToAudioResponse. err: %w", err)
+			return liberrors.Errorf("failed to ToAudioResponse. err: %w", err)
 		}
 
 		c.JSON(http.StatusOK, response)
@@ -63,7 +63,7 @@ func (h *userHandler) FindAudioByAudioID(c *gin.Context) {
 	logger := log.FromContext(ctx)
 
 	handlerhelper.HandleFunction(c, func() error {
-		audioID, err := ginhelper.GetUintFromPath(c, "audioID")
+		audioID, err := helper.GetUintFromPath(c, "audioID")
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return nil
@@ -71,12 +71,12 @@ func (h *userHandler) FindAudioByAudioID(c *gin.Context) {
 
 		result, err := h.userUsecase.FindAudioByAudioID(ctx, domain.AudioID(audioID))
 		if err != nil {
-			return xerrors.Errorf("failed to FindSentences. err: %w", err)
+			return liberrors.Errorf("failed to FindSentences. err: %w", err)
 		}
 
 		response, err := converter.ToAudioResponse(ctx, result)
 		if err != nil {
-			return xerrors.Errorf("failed to ToAudioResponse. err: %w", err)
+			return liberrors.Errorf("failed to ToAudioResponse. err: %w", err)
 		}
 
 		logger.Debugf("response: %+v", response)

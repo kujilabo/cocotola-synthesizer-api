@@ -3,7 +3,7 @@ package converter
 import (
 	"context"
 
-	"github.com/kujilabo/cocotola-synthesizer-api/src/app/handler/entity"
+	"github.com/kujilabo/cocotola-synthesizer-api/src/app/controller/entity"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/service"
 )
 

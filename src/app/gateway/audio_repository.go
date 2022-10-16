@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/domain"
 	"github.com/kujilabo/cocotola-synthesizer-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-synthesizer-api/src/lib/errors"
 )
 
 type audioEntity struct {
@@ -113,7 +113,7 @@ func (r *audioRepository) FindAudioIDByText(ctx context.Context, lang5 domain.La
 	}
 	model, err := entity.toAudioModel()
 	if err != nil {
-		return 0, xerrors.Errorf("failed to toAudio. entity: %v, err: %w", entity, err)
+		return 0, liberrors.Errorf("failed to toAudio. entity: %v, err: %w", entity, err)
 	}
 	return domain.AudioID(model.GetID()), nil
 }
