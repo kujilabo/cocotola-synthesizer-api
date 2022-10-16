@@ -7,9 +7,7 @@ import (
 	"flag"
 	"net/http"
 	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,11 +35,6 @@ const readHeaderTimeout = time.Duration(30) * time.Second
 
 // @securityDefinitions.basic BasicAuth
 func main() {
-	sigs := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-
 	ctx := context.Background()
 	env := flag.String("env", "", "environment")
 	flag.Parse()
@@ -56,12 +49,7 @@ func main() {
 
 	logrus.Infof("env: %s", *env)
 
-	go func() {
-		sig := <-sigs
-		logrus.Info()
-		logrus.Info(sig)
-		done <- true
-	}()
+	liberrors.UseXerrorsErrorf()
 
 	cfg, db, sqlDB, tp, err := initialize(ctx, *env)
 	if err != nil {
@@ -76,9 +64,9 @@ func main() {
 
 	synthesizerClient := gateway.NewSynthesizerClient(cfg.Synthesizer.Key, time.Duration(cfg.Synthesizer.TimeoutSec)*time.Second)
 
-	gracefulShutdownTime2 := time.Duration(cfg.Shutdown.TimeSec2) * time.Second
 	result := run(context.Background(), cfg, db, rfFunc, synthesizerClient)
 
+	gracefulShutdownTime2 := time.Duration(cfg.Shutdown.TimeSec2) * time.Second
 	time.Sleep(gracefulShutdownTime2)
 	logrus.Info("exited")
 	os.Exit(result)
